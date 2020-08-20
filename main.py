@@ -33,7 +33,7 @@ if __name__ == "__main__":
     
     memory = fillmemory.memory
     pc = fillmemory.pc - 1
-    ir = '11111111'        #8 bit IR
+    ir = ''        #8 bit IR
     ibr = ''       #20 bit IBR
     mar = ''       #12 bit MAR
     mbr = ''       #40 bit MBR
@@ -77,11 +77,31 @@ if __name__ == "__main__":
             print('Memory at {} changed to {}'.format(change_location, memory[bintodec.bintodec(mar) - 1]))
             print()
 
-        if(bintodec.bintodec(ir) == 0):
+        elif(bintodec.bintodec(ir) == 6):    #SUB M(X) INSTRUCTION
+            mbr = memory[bintodec.bintodec(mar) - 1]
+            mbr_dec = bintodec.signedbintodec(bintodec.bintodec(mbr), 40)
+            ac = dectobin.dectosignedbin(bintodec.signedbintodec(bintodec.bintodec(ac), 40) - mbr_dec)
+
+        elif(bintodec.bintodec(ir) == 15):   #JUMP +M(X, 0:19) INSTRUCTION
+            ac_dec = bintodec.signedbintodec(bintodec.bintodec(ac), 40)
+            if(ac_dec > 0):
+                pc = bintodec.bintodec(mar) - 1
+                ibr = ''
+
+        elif(bintodec.bintodec(ir) == 14):  #JUMP +M(X, 20:39) INSTRUCTION
+            ac_dec = bintodec.signedbintodec(bintodec.bintodec(ac), 40)
+            if(ac_dec > 0):
+                pc = bintodec.bintodec(mar) - 1
+                ibr = ''
+                mbr = memory[bintodec.bintodec(mar) - 1]
+                ibr = mbr[20:40]
+                print(ibr)
+
+        elif(bintodec.bintodec(ir) == 255):   #HALT INSTRUCTION
             execution = False
-            file3 = open('out.txt', 'w')
+            file3 = open("out.txt", "w")
             for x in memory:
-                file3.write(x+'\n')
+               file3.write(x+'\n')
             
             
         

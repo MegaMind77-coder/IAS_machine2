@@ -1,4 +1,4 @@
-file1 = open("./input1.txt",'r')
+file1 = open("./input3.txt",'r')
 lines = file1.readlines()
 memory = []
 pc = 0
@@ -23,7 +23,7 @@ while idx!=1000:
   memory.append('0000000000000000000000000000000000000000')
   idx+=1
 
-file2 = open('memory.txt', 'a')
+file2 = open('memory.txt', 'w')
 
 for x in memory:
   file2.write(x+'\n')
