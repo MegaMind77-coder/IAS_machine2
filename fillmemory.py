@@ -1,4 +1,4 @@
-file1 = open("./input3.txt",'r')
+file1 = open("./input5.txt",'r')
 lines = file1.readlines()
 memory = []
 pc = 0

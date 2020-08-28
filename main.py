@@ -2,6 +2,26 @@ import bintodec
 import fillmemory
 import dectobin
 
+def mul(mbr, mq):
+    mbr_dec = bintodec.signedbintodec(bintodec.bintodec(mbr), 40)
+    mq_dec = bintodec.signedbintodec(bintodec.bintodec(mq), 40)
+    result_dec = mbr_dec * mq_dec
+    if(result_dec >=0):
+        bin_str = bin(result_dec).replace("0b","")
+        while(len(bin_str)!=80):
+            bin_str = "0"+bin_str
+        
+        return bin_str
+
+    else:
+        result_dec *= -1
+        bin_str = bin(result_dec).replace("0b","")
+
+        while(len(bin_str)!=80):
+            bin_str = "0"+bin_str
+        return dectobin.findTwoscomplement(bin_str)
+
+
 def decode(ir, mar):
     print("DECODE INSTRUCTION")
     if(bintodec.bintodec(ir) == 1):
@@ -22,6 +42,10 @@ def decode(ir, mar):
         print("JUMP +M({}, 0:19)".format(bintodec.bintodec(mar)))
     elif(bintodec.bintodec(ir) == 16):
         print("JUMP +M({}, 20:39)".format(bintodec.bintodec(mar)))
+    elif(bintodec.bintodec(ir) == 9):
+        print("LOAD M({}), MQ".format(bintodec.bintodec(mar)))
+    elif(bintodec.bintodec(ir) == 11):
+        print("MUL M({})".format(bintodec.bintodec(mar)))
     elif(bintodec.bintodec(ir) == 255):
         print("HALT")
 
@@ -77,6 +101,10 @@ def executechanges(ac, mq, mbr, ibr, ir, mar, pc):
     print("PC = ", pc+1)
     print()
 
+def cycleEnd():
+    print("End of cycle ----------------------------------------------------------")
+    print()
+
 if __name__ == "__main__":
     
     memory = fillmemory.memory
@@ -91,6 +119,8 @@ if __name__ == "__main__":
     execution = True
 
     while(execution):
+        print("Current PC = ", pc + 1)
+        print()
         if (ibr == ''):
             mar = dectobin.dectobin(pc)
             mbr = memory[bintodec.bintodec(mar)]
@@ -122,6 +152,15 @@ if __name__ == "__main__":
             mbr = memory[bintodec.bintodec(mar) - 1]
             ac = dectobin.dectosignedbin(-1*bintodec.signedbintodec(bintodec.bintodec(mbr), 40))
             executechanges(ac, mq, mbr, ibr, ir, mar, pc)
+        
+        elif(bintodec.bintodec(ir) == 9):       #LOAD M(X), MQ INSTRUCTION
+            mbr = memory[bintodec.bintodec(mar) - 1]
+            mq = dectobin.dectosignedbin(-1*bintodec.signedbintodec(bintodec.bintodec(mbr), 40))
+            executechanges(ac, mq, mbr, ibr, ir, mar, pc)
+
+        elif(bintodec.bintodec(ir) == 12):      #LOAD MQ INSTRUCTION
+            ac = mq
+            mq = ''
 
         elif(bintodec.bintodec(ir) == 5):          #ADD M(X) INSTRUCTION
             mbr = memory[bintodec.bintodec(mar) - 1]
@@ -135,8 +174,14 @@ if __name__ == "__main__":
             change_location = bintodec.bintodec(mar)
             print('Memory at {} changed to {}'.format(change_location, memory[bintodec.bintodec(mar) - 1]))
             print()
+            ac = ''
             executechanges(ac, mq, mbr, ibr, ir, mar, pc)
 
+        elif(bintodec.bintodec(ir) == 11):    #MUL M(X)
+            mbr = memory[bintodec.bintodec(mar) - 1]
+            result_bin = mul(mbr, mq)
+            ac = result_bin[0:39]
+            mq = result_bin[40:80]
 
         elif(bintodec.bintodec(ir) == 6):    #SUB M(X) INSTRUCTION
             mbr = memory[bintodec.bintodec(mar) - 1]
@@ -181,6 +226,8 @@ if __name__ == "__main__":
             file3 = open("out.txt", "w")
             for x in memory:
                file3.write(x+'\n')
+
+        cycleEnd()
         
         
             
