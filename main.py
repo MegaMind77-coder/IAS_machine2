@@ -21,7 +21,10 @@ def mul(mbr, mq):
             bin_str = "0"+bin_str
         return dectobin.findTwoscomplement(bin_str)
 
-
+def div(mbr, ac):
+    mbr_dec = bintodec.signedbintodec(bintodec.bintodec(mbr), 40)
+    ac_dec = bintodec.signedbintodec(bintodec.bintodec(ac), 40)
+    
 def decode(ir, mar):
     print("DECODE INSTRUCTION")
     if(bintodec.bintodec(ir) == 1):
@@ -44,6 +47,8 @@ def decode(ir, mar):
         print("JUMP +M({}, 20:39)".format(bintodec.bintodec(mar)))
     elif(bintodec.bintodec(ir) == 9):
         print("LOAD M({}), MQ".format(bintodec.bintodec(mar)))
+    elif(bintodec.bintodec(ir) == 10):
+        print("LOAD MQ")    
     elif(bintodec.bintodec(ir) == 11):
         print("MUL M({})".format(bintodec.bintodec(mar)))
     elif(bintodec.bintodec(ir) == 255):
@@ -158,9 +163,10 @@ if __name__ == "__main__":
             mq = dectobin.dectosignedbin(-1*bintodec.signedbintodec(bintodec.bintodec(mbr), 40))
             executechanges(ac, mq, mbr, ibr, ir, mar, pc)
 
-        elif(bintodec.bintodec(ir) == 12):      #LOAD MQ INSTRUCTION
+        elif(bintodec.bintodec(ir) == 10):      #LOAD MQ INSTRUCTION
             ac = mq
             mq = ''
+            executechanges(ac, mq, mbr, ibr, ir, mar, pc)
 
         elif(bintodec.bintodec(ir) == 5):          #ADD M(X) INSTRUCTION
             mbr = memory[bintodec.bintodec(mar) - 1]
@@ -182,11 +188,16 @@ if __name__ == "__main__":
             result_bin = mul(mbr, mq)
             ac = result_bin[0:39]
             mq = result_bin[40:80]
+            executechanges(ac, mq, mbr, ibr, ir, mar, pc)
 
         elif(bintodec.bintodec(ir) == 6):    #SUB M(X) INSTRUCTION
             mbr = memory[bintodec.bintodec(mar) - 1]
             mbr_dec = bintodec.signedbintodec(bintodec.bintodec(mbr), 40)
             ac = dectobin.dectosignedbin(bintodec.signedbintodec(bintodec.bintodec(ac), 40) - mbr_dec)
+            executechanges(ac, mq, mbr, ibr, ir, mar, pc)
+
+        elif(bintodec.bintodec(ir) == 12):  #DIV M(X) INSTRUCTION
+            mbr = memory[bintodec.bintodec(mar) - 1]
             executechanges(ac, mq, mbr, ibr, ir, mar, pc)
 
 
