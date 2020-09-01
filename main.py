@@ -24,7 +24,11 @@ def mul(mbr, mq):
 def div(mbr, ac):
     mbr_dec = bintodec.signedbintodec(bintodec.bintodec(mbr), 40)
     ac_dec = bintodec.signedbintodec(bintodec.bintodec(ac), 40)
-    
+    quo_dec = int(ac_dec/mbr_dec)
+    rem_dec = ac_dec % mbr_dec 
+    return_str = dectobin.dectosignedbin(rem_dec) + dectobin.dectosignedbin(quo_dec)
+    return return_str
+
 def decode(ir, mar):
     print("DECODE INSTRUCTION")
     if(bintodec.bintodec(ir) == 1):
@@ -53,7 +57,6 @@ def decode(ir, mar):
         print("MUL M({})".format(bintodec.bintodec(mar)))
     elif(bintodec.bintodec(ir) == 255):
         print("HALT")
-
     print()
 
 def fetchchanges(ac, mq, mbr, ibr, ir, mar, pc):
@@ -160,7 +163,7 @@ if __name__ == "__main__":
         
         elif(bintodec.bintodec(ir) == 9):       #LOAD M(X), MQ INSTRUCTION
             mbr = memory[bintodec.bintodec(mar) - 1]
-            mq = dectobin.dectosignedbin(-1*bintodec.signedbintodec(bintodec.bintodec(mbr), 40))
+            mq = dectobin.dectosignedbin(bintodec.signedbintodec(bintodec.bintodec(mbr), 40))
             executechanges(ac, mq, mbr, ibr, ir, mar, pc)
 
         elif(bintodec.bintodec(ir) == 10):      #LOAD MQ INSTRUCTION
@@ -198,6 +201,9 @@ if __name__ == "__main__":
 
         elif(bintodec.bintodec(ir) == 12):  #DIV M(X) INSTRUCTION
             mbr = memory[bintodec.bintodec(mar) - 1]
+            result_bin = div(mbr, ac)
+            ac = result_bin[0:40]
+            mq = result_bin[40:80]
             executechanges(ac, mq, mbr, ibr, ir, mar, pc)
 
 
