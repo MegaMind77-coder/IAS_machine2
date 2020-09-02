@@ -2,7 +2,7 @@ import bintodec
 import fillmemory
 import dectobin
 
-def mul(mbr, mq):
+def mul(mbr, mq):      #function to perform MUL Instruction, this function basically performs function of ALU for MUL
     mbr_dec = bintodec.signedbintodec(bintodec.bintodec(mbr), 40)
     mq_dec = bintodec.signedbintodec(bintodec.bintodec(mq), 40)
     result_dec = mbr_dec * mq_dec
@@ -21,7 +21,7 @@ def mul(mbr, mq):
             bin_str = "0"+bin_str
         return dectobin.findTwoscomplement(bin_str)
 
-def div(mbr, ac):
+def div(mbr, ac):  #function to perform DIV Instruction, this function basically performs function of ALU for DIV
     mbr_dec = bintodec.signedbintodec(bintodec.bintodec(mbr), 40)
     ac_dec = bintodec.signedbintodec(bintodec.bintodec(ac), 40)
     quo_dec = int(ac_dec/mbr_dec)
@@ -29,7 +29,7 @@ def div(mbr, ac):
     return_str = dectobin.dectosignedbin(rem_dec) + dectobin.dectosignedbin(quo_dec)
     return return_str
 
-def decode(ir, mar):
+def decode(ir, mar):          #prints the meaning of instruction(based on data in IR, MAR), basically a part of decode cycle
     print("DECODE INSTRUCTION")
     if(bintodec.bintodec(ir) == 1):
         print("LOAD M({})".format(bintodec.bintodec(mar)))
@@ -59,7 +59,7 @@ def decode(ir, mar):
         print("HALT")
     print()
 
-def fetchchanges(ac, mq, mbr, ibr, ir, mar, pc):
+def fetchchanges(ac, mq, mbr, ibr, ir, mar, pc):   #Prints changes after each fetch cycle
     print("FETCHING INSTRUCTION")
     if(ac == ''):
         print("AC = ",ac)
@@ -84,7 +84,7 @@ def fetchchanges(ac, mq, mbr, ibr, ir, mar, pc):
     print("PC = ", pc+1)
     print()
 
-def executechanges(ac, mq, mbr, ibr, ir, mar, pc):
+def executechanges(ac, mq, mbr, ibr, ir, mar, pc):   #prints changes after each execution cycle
     print("EXECUTE CHANGES")
     if(ac == ''):
         print("AC = ",ac)
@@ -109,11 +109,11 @@ def executechanges(ac, mq, mbr, ibr, ir, mar, pc):
     print("PC = ", pc+1)
     print()
 
-def cycleEnd():
+def cycleEnd():         #just for prsentation, basically marks the end of each fetch, decode, execute cycle
     print("End of cycle ----------------------------------------------------------")
     print()
 
-if __name__ == "__main__":
+if __name__ == "__main__":            #This part contains the main loop to execute instruction, loop continues until HALT is encountered
     
     memory = fillmemory.memory
     pc = fillmemory.pc - 1
@@ -124,10 +124,10 @@ if __name__ == "__main__":
     ac = ''        #40 bit AC
     mq = ''        #40 bit MQ
 
-    execution = True
+    execution = True    #truth variable to decide execution of instructions
 
     while(execution):
-        print("Current PC = ", pc + 1)
+        print("Current PC = ", pc + 1)              #fetch begins
         print()
         if (ibr == ''):
             mar = dectobin.dectobin(pc)
@@ -149,7 +149,7 @@ if __name__ == "__main__":
 
         fetchchanges(ac, mq, mbr, ibr, ir, mar, pc)
 
-        decode(ir,mar)
+        decode(ir,mar)          #decode and execute begins
         
         if(bintodec.bintodec(ir) == 1):            #LOAD M(X) INSTRUCTION
             mbr = memory[bintodec.bintodec(mar) - 1]
@@ -244,7 +244,7 @@ if __name__ == "__main__":
             for x in memory:
                file3.write(x+'\n')
 
-        cycleEnd()
+        cycleEnd()      
         
         
             

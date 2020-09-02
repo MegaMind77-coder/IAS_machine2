@@ -1,5 +1,5 @@
 import bintodec
-def findTwoscomplement(str): 
+def findTwoscomplement(str): #function for two's complement used for converison of dec to signed binary
     n = len(str) 
     i = n - 1
     while(i >= 0): 
@@ -23,10 +23,10 @@ def findTwoscomplement(str):
         k -= 1
     return str
   
-def dectobin(dec):
+def dectobin(dec):            #function to convert dec to unsigned binary
   return bin(dec).replace("0b","")
 
-def dectosignedbin(dec):
+def dectosignedbin(dec):           #function to convert dec ro signed binary
   if dec>=0:
     bin_str = bin(dec).replace("0b","")
     while(len(bin_str)!=40):
@@ -43,7 +43,4 @@ def dectosignedbin(dec):
 
     return findTwoscomplement(bin_str)
 
-# Driver code 
-if __name__ == '__main__': 
-    print(dectosignedbin(-5))
     
